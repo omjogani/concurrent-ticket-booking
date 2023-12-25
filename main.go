@@ -2,7 +2,12 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
 	"sync"
+
+	"golang.org/x/net/websocket"
 )
 
 var seats = make([][]string, 6)
@@ -65,8 +70,41 @@ func allocateSeat(totalCustomer int) {
 	wg.Wait()
 }
 
+type Server struct {
+	conns map[*websocket.Conn]bool
+}
+
+func NewServer() *Server {
+	return &Server{
+		conns: make(map[*websocket.Conn]bool),
+	}
+}
+
+func (s *Server) bookTickets(ws *websocket.Conn) {
+	// ask the system how many tickets you want to book
+	fmt.Println("New Incoming Connection from User: ", ws.RemoteAddr())
+	numberOfTicket := strings.Split(ws.Request().URL.RawQuery, "=")[1]
+
+	if numberOfTicket == "" {
+		payload := "Number of Ticket not mentioned!"
+		ws.Write([]byte(payload))
+	} else {
+		numberOfTicketInt, err := strconv.Atoi(numberOfTicket)
+		if err != nil {
+			fmt.Println("Error in converting numberOfTicket to int")
+		} else {
+			processSeats()
+			allocateSeat(numberOfTicketInt)
+			displaySeats()
+			payload := "Tickets booked!"
+			ws.Write([]byte(payload))
+		}
+	}
+}
+
 func main() {
-	processSeats()
+	server := NewServer()
+	http.Handle("/book-ticket", websocket.Handler(server.bookTickets))
 	defer displaySeats()
-	allocateSeat(8)
+	http.ListenAndServe(":3550", nil)
 }

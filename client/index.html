@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+  </head>
+  <body>
+    <h1 class="text-5xl">Ticket Booking</h1>
+    <p>How many tickets do you want to book?:</p>
+  <div class="relative mt-2 rounded-md shadow-sm">
+    <input type="text" name="price" id="price" class=" bg-transparent text-white block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="total tickets">
+  </div>
+  <button onclick="handleSubmitTickets()" id="bookButton" type="button" class="mt-4 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Book Tickets</button>
+
+    <div class="container">
+        <div class="row-container">
+            <div class="row">
+                <div class="seat">A1</div>
+                <div class="seat">B1</div>
+                <div class="seat">C1</div>
+                <div class="seat">D1</div>
+                <div class="seat">E1</div>
+                <div class="seat">F1</div>
+                <div class="seat">G1</div>
+                <div class="seat">H1</div>
+                <div class="seat">I1</div>
+                <div class="seat">J1</div>
+                <div class="seat">K1</div>
+                <div class="seat">L1</div>
+                <div class="seat">M1</div>
+                <div class="seat">N1</div>
+                <div class="seat">O1</div>
+                <div class="seat">P1</div>
+                <div class="seat">Q1</div>
+                <div class="seat">R1</div>
+                <div class="seat">S1</div>
+                <div class="seat">T1</div>
+                <div class="seat">U1</div>
+            </div>
+            <div class="row">
+                <div class="seat">A2</div>
+                <div class="seat">B2</div>
+                <div class="seat">C2</div>
+                <div class="seat">D2</div>
+                <div class="seat">E2</div>
+                <div class="seat">F2</div>
+                <div class="seat">G2</div>
+                <div class="seat">H2</div>
+                <div class="seat">I2</div>
+                <div class="seat">J2</div>
+                <div class="seat">K2</div>
+                <div class="seat">L2</div>
+                <div class="seat">M2</div>
+                <div class="seat">N2</div>
+                <div class="seat">O2</div>
+                <div class="seat">P2</div>
+                <div class="seat">Q2</div>
+                <div class="seat">R2</div>
+                <div class="seat">S2</div>
+                <div class="seat">T2</div>
+                <div class="seat">U2</div>
+            </div>
+            <div class="row">
+                <div class="seat">A3</div>
+                <div class="seat">B3</div>
+                <div class="seat">C3</div>
+                <div class="seat">D3</div>
+                <div class="seat">E3</div>
+                <div class="seat">F3</div>
+                <div class="seat">G3</div>
+                <div class="seat">H3</div>
+                <div class="seat">I3</div>
+                <div class="seat">J3</div>
+                <div class="seat">K3</div>
+                <div class="seat">L3</div>
+                <div class="seat">M3</div>
+                <div class="seat">N3</div>
+                <div class="seat">O3</div>
+                <div class="seat">P3</div>
+                <div class="seat">Q3</div>
+                <div class="seat">R3</div>
+                <div class="seat">S3</div>
+                <div class="seat">T3</div>
+                <div class="seat">U3</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="seat">A4</div>
+                <div class="seat">B4</div>
+                <div class="seat">C4</div>
+                <div class="seat">D4</div>
+                <div class="seat">E4</div>
+                <div class="seat">F4</div>
+                <div class="seat">G4</div>
+                <div class="seat">H4</div>
+                <div class="seat">I4</div>
+                <div class="seat">J4</div>
+                <div class="seat">K4</div>
+                <div class="seat">L4</div>
+                <div class="seat">M4</div>
+                <div class="seat">N4</div>
+                <div class="seat">O4</div>
+                <div class="seat">P4</div>
+                <div class="seat">Q4</div>
+                <div class="seat">R4</div>
+                <div class="seat">S4</div>
+                <div class="seat">T4</div>
+                <div class="seat">U4</div>
+            </div>
+            <div class="row">
+                <div class="seat">A5</div>
+                <div class="seat">B5</div>
+                <div class="seat">C5</div>
+                <div class="seat">D5</div>
+                <div class="seat">E5</div>
+                <div class="seat">F5</div>
+                <div class="seat">G5</div>
+                <div class="seat">H5</div>
+                <div class="seat">I5</div>
+                <div class="seat">J5</div>
+                <div class="seat">K5</div>
+                <div class="seat">L5</div>
+                <div class="seat">M5</div>
+                <div class="seat">N5</div>
+                <div class="seat">O5</div>
+                <div class="seat">P5</div>
+                <div class="seat">Q5</div>
+                <div class="seat">R5</div>
+                <div class="seat">S5</div>
+                <div class="seat">T5</div>
+                <div class="seat">U5</div>
+            </div>
+            <div class="row">
+                <div class="seat">A6</div>
+                <div class="seat">B6</div>
+                <div class="seat">C6</div>
+                <div class="seat">D6</div>
+                <div class="seat">E6</div>
+                <div class="seat">F6</div>
+                <div class="seat">G6</div>
+                <div class="seat">H6</div>
+                <div class="seat">I6</div>
+                <div class="seat">J6</div>
+                <div class="seat">K6</div>
+                <div class="seat">L6</div>
+                <div class="seat">M6</div>
+                <div class="seat">N6</div>
+                <div class="seat">O6</div>
+                <div class="seat">P6</div>
+                <div class="seat">Q6</div>
+                <div class="seat">R6</div>
+                <div class="seat">S6</div>
+                <div class="seat">T6</div>
+                <div class="seat">U6</div>
+                
+            </div>
+            <div class="text-wrapper">
+                <p class="text">Selected Seats <span id='count'>0</span>
+                <p class="text">Total Price ₹<span id="total">0</span></p>
+            </div>
+        </div>
+    </div>
+    <script src="./main.js"></script>
+</body>
+</html>
