@@ -5,12 +5,17 @@ import (
 	"sync"
 )
 
-var seats = make([][]int, 6)
+var seats = make([][]string, 6)
 var mutexes [6][20]sync.Mutex
 
 func processSeats() {
 	for i := range seats {
-		seats[i] = make([]int, 20)
+		seats[i] = make([]string, 20)
+	}
+	for i := 0; i < len(seats); i++ {
+		for j := 0; j < len(seats[0]); j++ {
+			seats[i][j] = "⋅"
+		}
 	}
 }
 
@@ -29,47 +34,39 @@ func displaySeats() {
 }
 
 func getMeASeat(seatNumber int) {
-	// if seatNumber == 0 {
-	// start from starting
-	status := false
-	for row := 0; row < len(seats); row++ {
-		for col := 0; col < len(seats[0]); col++ {
-			// mutexes[row][col].Lock()
-			if seats[row][col] == 1 {
-				continue
+	for {
+		for row := 0; row < len(seats[0]); row++ {
+			for col := 0; col < len(seats); col++ {
+				mutexes[col][row].Lock()
+				if seats[col][row] == "⋅" {
+					// seat is unoccupied & free to book
+					seats[col][row] = "x"
+					mutexes[col][row].Unlock()
+					return
+				}
+				mutexes[col][row].Unlock()
 			}
-			seats[row][col] = seatNumber
-			// mutexes[row][col].Unlock()
-			status = true
-			break
-		}
-		if status {
-			break
 		}
 	}
-	// } else {
-	// get me specific seat
-	// }
 }
 
 func allocateSeat(totalCustomer int) {
+	var wg sync.WaitGroup
+	wg.Add(totalCustomer)
+
 	for idx := 1; idx <= totalCustomer; idx++ {
-		go func() {
-			getMeASeat(idx)
-		}()
+		go func(seatNumber int) {
+			defer wg.Done()
+			getMeASeat(seatNumber)
+		}(idx)
 	}
+
+	// wait till every seats get allocated
+	wg.Wait()
 }
-
-// func allocateSeatRandomly(totalCustomer int) {
-// 	for idx := range totalCustomer {
-// 		go func () {
-
-// 		}
-// 	}
-// }
 
 func main() {
 	processSeats()
 	defer displaySeats()
-	allocateSeat(120)
+	allocateSeat(8)
 }
