@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -93,18 +95,72 @@ func (s *Server) bookTickets(ws *websocket.Conn) {
 		if err != nil {
 			fmt.Println("Error in converting numberOfTicket to int")
 		} else {
-			processSeats()
 			allocateSeat(numberOfTicketInt)
 			displaySeats()
-			payload := "Tickets booked!"
+			payload, err := json.Marshal(seats)
+			s.broadCastSeatsUpdate(payload)
+			if err != nil {
+				fmt.Println("Error in Marshal Operation")
+			}
 			ws.Write([]byte(payload))
 		}
 	}
 }
 
+func (s *Server) broadCastSeatsUpdate(payload []byte) {
+	for ws := range s.conns {
+		go func(ws *websocket.Conn) {
+			if _, err := ws.Write(payload); err != nil {
+				fmt.Println("Write Error:", err)
+			}
+		}(ws)
+	}
+}
+
+func (s *Server) readLoop(ws *websocket.Conn) {
+	buf := make([]byte, 1024)
+	for {
+		_, err := ws.Read(buf)
+		if err != nil {
+			if err == io.EOF {
+				// Connection from other side is closed!
+				break
+			}
+			fmt.Println("Read Error: ", err)
+			continue
+		}
+		msg, err := json.Marshal(seats)
+		if err != nil {
+			fmt.Println(err)
+		}
+		s.broadCastSeatsUpdate(msg)
+		fmt.Println("Message:", string(msg))
+		ws.Write([]byte("Thank you for the Message!!"))
+	}
+}
+
+func (s *Server) getSeatStatusUpdate(ws *websocket.Conn) {
+	fmt.Println("Seats Status Request from : ", ws.RemoteAddr())
+
+	// payload, err := json.Marshal(seats)
+	// if err != nil {
+	// 	fmt.Println("Error in Marshal Operation")
+	// }
+
+	// broadcast status to each connection client
+	// fmt.Println("New incoming Connection From Client: ", ws.RemoteAddr())
+	// maps are not concurrent(thread) safe so mutex can be used for production
+	s.conns[ws] = true
+	s.readLoop(ws)
+}
+
 func main() {
+	processSeats()
 	server := NewServer()
+	PORT := ":3550"
+	http.Handle("/", websocket.Handler(server.getSeatStatusUpdate))
 	http.Handle("/book-ticket", websocket.Handler(server.bookTickets))
-	defer displaySeats()
-	http.ListenAndServe(":3550", nil)
+
+	fmt.Println("Server is listening at", PORT)
+	http.ListenAndServe(PORT, nil)
 }
