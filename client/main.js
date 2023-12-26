@@ -4,6 +4,7 @@ const totalTicketInput = document.getElementById("total-ticket")
 let ws;
 
 function connectToWS(wsURI, totalTicketRequests) {
+    // return new WebSocket(wsURI+ `book-ticket?tickets=${totalTicketRequests}`);
     return new WebSocket(wsURI+ `book-ticket?tickets=${totalTicketRequests}`);
 }
 

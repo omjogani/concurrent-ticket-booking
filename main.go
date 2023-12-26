@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 
 	"golang.org/x/net/websocket"
@@ -82,31 +81,6 @@ func NewServer() *Server {
 	}
 }
 
-func (s *Server) bookTickets(ws *websocket.Conn) {
-	// ask the system how many tickets you want to book
-	fmt.Println("New Incoming Connection from User: ", ws.RemoteAddr())
-	numberOfTicket := strings.Split(ws.Request().URL.RawQuery, "=")[1]
-
-	if numberOfTicket == "" {
-		payload := "Number of Ticket not mentioned!"
-		ws.Write([]byte(payload))
-	} else {
-		numberOfTicketInt, err := strconv.Atoi(numberOfTicket)
-		if err != nil {
-			fmt.Println("Error in converting numberOfTicket to int")
-		} else {
-			allocateSeat(numberOfTicketInt)
-			displaySeats()
-			payload, err := json.Marshal(seats)
-			s.broadCastSeatsUpdate(payload)
-			if err != nil {
-				fmt.Println("Error in Marshal Operation")
-			}
-			ws.Write([]byte(payload))
-		}
-	}
-}
-
 func (s *Server) broadCastSeatsUpdate(payload []byte) {
 	for ws := range s.conns {
 		go func(ws *websocket.Conn) {
@@ -143,12 +117,36 @@ func (s *Server) getSeatStatusUpdate(ws *websocket.Conn) {
 	s.readLoop(ws)
 }
 
+func (s *Server) bookTotalTicket(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Requested")
+	numberOfTicket := r.URL.Query().Get("tickets")
+
+	if numberOfTicket == "" {
+		// not specified number of tickets to book
+		return
+	} else {
+		numberOfTicketInt, err := strconv.Atoi(numberOfTicket)
+		if err != nil {
+			fmt.Println("Error in converting numberOfTicket to int")
+		} else {
+			allocateSeat(numberOfTicketInt)
+			displaySeats()
+			payload, err := json.Marshal(seats)
+
+			s.broadCastSeatsUpdate(payload)
+			if err != nil {
+				fmt.Println("Error in Marshal Operation")
+			}
+		}
+	}
+}
+
 func main() {
 	processSeats()
 	server := NewServer()
 	PORT := ":3550"
 	http.Handle("/", websocket.Handler(server.getSeatStatusUpdate))
-	http.Handle("/book-ticket", websocket.Handler(server.bookTickets))
+	http.HandleFunc("/book-ticket", server.bookTotalTicket)
 
 	fmt.Println("Server is listening at", PORT)
 	http.ListenAndServe(PORT, nil)
