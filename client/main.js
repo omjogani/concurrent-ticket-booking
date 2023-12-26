@@ -1,29 +1,22 @@
-const wsURI = "ws://192.168.1.102:3550/";
+const wsURI = "ws://localhost:3550/";
 
 const totalTicketInput = document.getElementById("total-ticket")
-let ws;
 
-function connectToWS(wsURI, totalTicketRequests) {
-    // return new WebSocket(wsURI+ `book-ticket?tickets=${totalTicketRequests}`);
-    return new WebSocket(wsURI+ `book-ticket?tickets=${totalTicketRequests}`);
+function generateURL(totalTicketRequests) {
+    return `http://localhost:3500/book-ticket?tickets=${totalTicketRequests}`;
 }
 
-function handleSubmitTickets() {
-    ws = connectToWS(wsURI, totalTicketInput.value);
-    ws.onerror = function () {
-        console.log("Web Socket Connection Error!");
-    }
-    ws.onmessage = function(event) {
-        console.log("got update");
-        mapDataToUI(event);
-    }
+async function handleSubmitTickets() {
+    await fetch(generateURL(totalTicketInput.value), {
+        method: "POST",
+        mode: "no-cors",
+        credentials: "same-origin",
+    }).then(()=>{
+        showSnackbar(`${totalTicketInput.value} Ticket Booked!!`);
+    });
 }
 
-window.addEventListener("unload", function (){
-    ws.close();
-});
-
-// ==========================
+// seats status web socket
 const statusWS = new WebSocket(wsURI);
 
 // handle error on statusWS
@@ -35,21 +28,45 @@ statusWS.onerror = function() {
 statusWS.onmessage = function(event){
     mapDataToUI(event);
 }
-    
+
 
 function mapDataToUI(event){
     const eventData = JSON.parse(event.data);
-    console.log(eventData);
+    let ticketCounter = 0;
 
     // map event data to GUI
     for(let col = 0; col < eventData[0].length; col++){
         for (let index = 0; index < eventData.length; index++) {
             if(eventData[index][col] == "x"){
                 const calculateCell =`${String.fromCharCode(65 + col)}${index+1}`; 
-                console.log(calculateCell);
                 const currentBox = document.getElementById(calculateCell);
                 currentBox.classList.add("occupied");
+                ticketCounter++;
             }
         }
     }
+
+    // Update Remaining & Occupied Seats
+    const remainingTicketsElement = document.getElementById("r_count");
+    const occupiedTicketsElement = document.getElementById("o_count");
+    let occupiedTickets = occupiedTicketsElement.innerHTML;
+    occupiedTicketsElement.innerHTML = ticketCounter;
+    remainingTicketsElement.innerHTML = 120 - occupiedTickets;
+
+}
+
+window.addEventListener("unload", function (){
+    statusWS.close();
+});
+
+function showSnackbar(text) {
+    const snackbar = document.getElementById("snackbar");
+    const snackbarText = document.getElementById("snackbar-text");
+    snackbarText.textContent = text;
+    snackbar.classList.remove("hidden");
+
+    // Automatically hide after a timeout
+    setTimeout(() => {
+        snackbar.classList.add("hidden");
+    }, 3000); 
 }

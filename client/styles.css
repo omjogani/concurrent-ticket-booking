@@ -100,3 +100,20 @@ body {
 .row {
     display: flex;
 }
+
+#snackbar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    z-index: 9999; /* Ensure it appears above other content */
+}
+
+.hidden {
+    display: none;
+}
