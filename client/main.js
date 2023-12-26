@@ -1,4 +1,4 @@
-const wsURI = "ws://localhost:3550/";
+const wsURI = "ws://192.168.1.102:3550/";
 
 const totalTicketInput = document.getElementById("total-ticket")
 let ws;

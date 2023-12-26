@@ -134,22 +134,11 @@ func (s *Server) readLoop(ws *websocket.Conn) {
 			fmt.Println(err)
 		}
 		s.broadCastSeatsUpdate(msg)
-		fmt.Println("Message:", string(msg))
-		ws.Write([]byte("Thank you for the Message!!"))
 	}
 }
 
 func (s *Server) getSeatStatusUpdate(ws *websocket.Conn) {
 	fmt.Println("Seats Status Request from : ", ws.RemoteAddr())
-
-	// payload, err := json.Marshal(seats)
-	// if err != nil {
-	// 	fmt.Println("Error in Marshal Operation")
-	// }
-
-	// broadcast status to each connection client
-	// fmt.Println("New incoming Connection From Client: ", ws.RemoteAddr())
-	// maps are not concurrent(thread) safe so mutex can be used for production
 	s.conns[ws] = true
 	s.readLoop(ws)
 }
