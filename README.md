@@ -8,7 +8,8 @@ It's like the TATKAL Ticket Booking system where the number of users will fire b
 
 ### Working Example
    
-![concurrent-ticketbooking-demo](https://github.com/omjogani/postgresql-multipartitions/assets/72139914/dd8bad89-0baa-48e3-8856-0fadba8de244)
+![concurrent-ticketbooking-demo](https://github.com/omjogani/concurrent-ticket-booking/assets/72139914/18c81613-b208-4d57-9562-81ac4b43b117)
+
 
 
 ### Technical Details
