@@ -1,16 +1,16 @@
-const wsURI = "ws://localhost:3550/";
+const wsURI = "ws://192.168.1.102:3550/";
 
 const totalTicketInput = document.getElementById("total-ticket")
 
 function generateURL(totalTicketRequests) {
-    return `http://localhost:3500/book-ticket?tickets=${totalTicketRequests}`;
+    return `http://192.168.1.102:3550/book-ticket?tickets=${totalTicketRequests}`;
 }
 
 async function handleSubmitTickets() {
     await fetch(generateURL(totalTicketInput.value), {
         method: "POST",
         mode: "no-cors",
-        credentials: "same-origin",
+        // credentials: "same-origin",
     }).then(()=>{
         showSnackbar(`${totalTicketInput.value} Ticket Booked!!`);
     });
